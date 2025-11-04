@@ -34,6 +34,7 @@ from rich.text import Text
 from rich.tree import Tree
 
 from . import fields
+from .diff import pretty_diff
 from .fields import MATCH_COUNT_HEADER, _get_val, add_count_bars
 from .utils import (
     HashableDict,
@@ -211,6 +212,9 @@ def _json_dict_list(
         columns would have consistent widths across both tables to ensure visual
         alignment.
     """
+    if {"before", "after"} <= data.keys():
+        return pretty_diff(data["before"], data["after"])
+
     tree: Tree = flexitable(HashableDict({f: flexitable(v) for f, v in data.items()}))
 
     if (
